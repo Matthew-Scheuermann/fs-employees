@@ -3,6 +3,7 @@ import {
   getEmployees,
   getEmployee,
   createEmployee,
+  deleteEmployee,
 } from "#db/queries/employees";
 
 const app = express();
@@ -37,4 +38,10 @@ app.post("/employees", async (req, res) => {
   }
   const employee = await createEmployee({ name, birthday, salary });
   res.status(201).send(employee);
+});
+
+app.delete("/employees/:id", async (req, res) => {
+  const employee = await deleteEmployee(req.params.id);
+  if (!employee) return res.status(404).send("Employee not found.");
+  res.sendStatus(204);
 });
