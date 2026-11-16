@@ -1,5 +1,9 @@
 import express from "express";
-import { getEmployees, getEmployee } from "#db/queries/employees";
+import {
+  getEmployees,
+  getEmployee,
+  createEmployee,
+} from "#db/queries/employees";
 
 const app = express();
 
@@ -24,4 +28,13 @@ app.get("/employees/:id", async (req, res) => {
   const employee = await getEmployee(id);
   if (!employee) return res.status(404).send("Employee not found.");
   res.send(employee);
+});
+
+app.post("/employees", async (req, res) => {
+  const { name, birthday, salary } = req.body ?? {};
+  if (!name || !birthday || salary === undefined) {
+    return res.status(400).send("Missing required field.");
+  }
+  const employee = await createEmployee({ name, birthday, salary });
+  res.status(201).send(employee);
 });
